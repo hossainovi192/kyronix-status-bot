@@ -4,6 +4,7 @@ import discord
 from discord.ext import tasks
 from mcstatus import JavaServer
 
+
 # =========================================================
 # CONFIGURATION
 # =========================================================
@@ -15,6 +16,7 @@ STATUS_CHANNEL_ID = 1543874103449092217
 
 MAX_PLAYERS = 20
 UPDATE_INTERVAL = 30
+
 
 # =========================================================
 # DISCORD CLIENT
@@ -62,9 +64,7 @@ async def get_minecraft_status():
             "players": status.players.online,
             "max": MAX_PLAYERS,
             "names": players,
-            "ping": round(status.latency),
-            "version": status.version.name,
-            "motd": status.description
+            "version": status.version.name
         }
 
     try:
@@ -80,52 +80,8 @@ async def get_minecraft_status():
             "players": 0,
             "max": MAX_PLAYERS,
             "names": [],
-            "ping": 0,
-            "version": "Unknown",
-            "motd": "Server unavailable"
+            "version": "Unknown"
         }
-
-
-# =========================================================
-# PLAYER CAPACITY BAR
-# =========================================================
-
-def player_bar(players, maximum):
-
-    if maximum <= 0:
-        return "□□□□□□□□□□"
-
-    percentage = players / maximum
-
-    filled = round(percentage * 10)
-
-    filled = max(0, min(10, filled))
-
-    return "■" * filled + "□" * (10 - filled)
-
-
-# =========================================================
-# CLEAN MOTD
-# =========================================================
-
-def clean_motd(motd):
-
-    if isinstance(motd, str):
-
-        return motd.replace("\n", " ").strip()
-
-    # Some Minecraft versions return MOTD as a dictionary
-    if isinstance(motd, dict):
-
-        try:
-
-            return motd.get("text", "Kyronix Minecraft Server")
-
-        except Exception:
-
-            return "Kyronix Minecraft Server"
-
-    return "Kyronix Minecraft Server"
 
 
 # =========================================================
@@ -144,6 +100,7 @@ async def update_status():
 
         # Get Minecraft information
         data = await get_minecraft_status()
+
 
         # =================================================
         # SERVER OFFLINE
@@ -165,15 +122,6 @@ async def update_status():
                     53,
                     69
                 )
-            )
-
-            embed.add_field(
-
-                name="🌐 Server",
-
-                value="`s1.anuverse.fun:25650`",
-
-                inline=False
             )
 
             embed.add_field(
@@ -203,6 +151,7 @@ async def update_status():
                 inline=False
             )
 
+
         # =================================================
         # SERVER ONLINE
         # =================================================
@@ -213,42 +162,10 @@ async def update_status():
 
             maximum = data["max"]
 
-            ping = data["ping"]
-
             names = data["names"]
 
             version = data["version"]
 
-            motd = clean_motd(data["motd"])
-
-            # ---------------------------------------------
-            # Capacity bar
-            # ---------------------------------------------
-
-            bar = player_bar(
-                players,
-                maximum
-            )
-
-            # ---------------------------------------------
-            # Ping quality
-            # ---------------------------------------------
-
-            if ping < 80:
-
-                ping_status = "🟢 Excellent"
-
-            elif ping < 150:
-
-                ping_status = "🟡 Good"
-
-            elif ping < 250:
-
-                ping_status = "🟠 High"
-
-            else:
-
-                ping_status = "🔴 Very High"
 
             # ---------------------------------------------
             # Player list
@@ -263,18 +180,22 @@ async def update_status():
                     f"・`{name}`"
 
                     for name in displayed_names
+
                 )
 
                 if len(names) > 20:
 
                     player_list += (
+
                         f"\n・*and "
                         f"{len(names) - 20} more...*"
+
                     )
 
             else:
 
                 player_list = "*No players online*"
+
 
             # ---------------------------------------------
             # ONLINE EMBED
@@ -296,6 +217,7 @@ async def update_status():
                 )
             )
 
+
             # ---------------------------------------------
             # Players
             # ---------------------------------------------
@@ -304,46 +226,25 @@ async def update_status():
 
                 name="👥 Players",
 
-                value=(
-                    f"**{players}/{maximum}**\n"
-                    f"`{bar}`"
-                ),
+                value=f"**{players}/{maximum}**",
 
                 inline=True
             )
 
+
             # ---------------------------------------------
-            # Ping
+            # Status
             # ---------------------------------------------
 
             embed.add_field(
 
-                name="📡 Ping",
+                name="🟢 Status",
 
-                value=(
-                    f"**{ping}ms**\n"
-                    f"{ping_status}"
-                ),
+                value="`Online`",
 
                 inline=True
             )
 
-            # ---------------------------------------------
-            # Server Address
-            # ---------------------------------------------
-
-            embed.add_field(
-
-                name="🌐 Server Address",
-
-                value=(
-                    "```"
-                    "s1.anuverse.fun:25650"
-                    "```"
-                ),
-
-                inline=False
-            )
 
             # ---------------------------------------------
             # Online Players
@@ -358,6 +259,7 @@ async def update_status():
                 inline=False
             )
 
+
             # ---------------------------------------------
             # Minecraft Version
             # ---------------------------------------------
@@ -370,6 +272,7 @@ async def update_status():
 
                 inline=True
             )
+
 
             # ---------------------------------------------
             # Restart
@@ -384,18 +287,6 @@ async def update_status():
                 inline=True
             )
 
-            # ---------------------------------------------
-            # MOTD
-            # ---------------------------------------------
-
-            embed.add_field(
-
-                name="📝 Server MOTD",
-
-                value=f"> {motd[:1024]}",
-
-                inline=False
-            )
 
         # =================================================
         # FOOTER
@@ -404,9 +295,11 @@ async def update_status():
         embed.set_footer(
 
             text="KYRONIX • Minecraft Community"
+
         )
 
         embed.timestamp = discord.utils.utcnow()
+
 
         # =================================================
         # FIND EXISTING BOT MESSAGE
@@ -428,6 +321,7 @@ async def update_status():
 
                 return
 
+
         # =================================================
         # CREATE NEW MESSAGE
         # =================================================
@@ -439,6 +333,7 @@ async def update_status():
         print(
             "Status message created."
         )
+
 
     # =====================================================
     # ERROR HANDLING
@@ -488,6 +383,7 @@ if not DISCORD_TOKEN:
     raise RuntimeError(
         "DISCORD_TOKEN environment variable is missing."
     )
+
 
 client.run(
     DISCORD_TOKEN
