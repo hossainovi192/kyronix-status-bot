@@ -17,6 +17,14 @@ STATUS_CHANNEL_ID = 1543874103449092217
 MAX_PLAYERS = 20
 UPDATE_INTERVAL = 30
 
+GIF_URL = (
+    "https://media.discordapp.net/attachments/"
+    "1543861808367009793/1543863839324635196/"
+    "3dgifmaker14646.gif?"
+    "ex=6a966abe&is=6a95193e&"
+    "hm=911464c50ff13bade04e0a543500675ebae2ebdb6d01108a62160dab4e825a28&="
+)
+
 
 # =========================================================
 # DISCORD CLIENT
@@ -286,6 +294,15 @@ async def update_status():
 
                 inline=True
             )
+
+
+        # =================================================
+        # GIF
+        # =================================================
+
+        embed.set_image(
+            url=GIF_URL
+        )
 
 
         # =================================================
