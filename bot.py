@@ -10,6 +10,7 @@ MINECRAFT_SERVER = "s1.anuverse.fun:25650"
 STATUS_CHANNEL_ID = 1543874103449092217
 
 UPDATE_INTERVAL = 30
+MAX_PLAYERS = 20
 
 intents = discord.Intents.default()
 client = discord.Client(intents=intents)
@@ -23,20 +24,23 @@ async def get_minecraft_status():
 
         players = []
 
+        # Try Query first for the full player list
         try:
             query = server.query()
             players = query.players.list
         except Exception:
+            # Fall back to the player sample from the status response
             if status.players.sample:
                 players = [
                     player.name
                     for player in status.players.sample
+                    if player.name
                 ]
 
         return {
             "online": True,
             "players": status.players.online,
-            "max": status.players.max,
+            "max": MAX_PLAYERS,
             "names": players,
             "ping": round(status.latency)
         }
@@ -50,7 +54,7 @@ async def get_minecraft_status():
         return {
             "online": False,
             "players": 0,
-            "max": 50,
+            "max": MAX_PLAYERS,
             "names": [],
             "ping": 0
         }
@@ -100,7 +104,7 @@ async def update_status():
 
         embed.add_field(
             name="👥 Players",
-            value=f"`{data['players']}/{data['max']}`",
+            value=f"`{data['players']}/{MAX_PLAYERS}`",
             inline=True
         )
 
