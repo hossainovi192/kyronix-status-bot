@@ -36,6 +36,57 @@ client = discord.Client(intents=intents)
 
 
 # =========================================================
+# /IP SLASH COMMAND
+# =========================================================
+
+@client.tree.command(
+    name="ip",
+    description="Show the Kyronix Minecraft server IP"
+)
+async def ip_command(interaction: discord.Interaction):
+
+    embed = discord.Embed(
+        title="⚒️ Server IP",
+        description="**Where legends are forged.**",
+        color=discord.Color.from_rgb(
+            0,
+            191,
+            255
+        )
+    )
+
+    embed.add_field(
+        name="Java :",
+        value="```paid-01.anuverse.fun:55556```",
+        inline=False
+    )
+
+    embed.add_field(
+        name="Bedrock:",
+        value="```paid-01.anuverse.fun```",
+        inline=False
+    )
+
+    embed.add_field(
+        name="Port For Bedrock :",
+        value="```55556```",
+        inline=False
+    )
+
+    embed.set_image(
+        url=GIF_URL
+    )
+
+    embed.set_footer(
+        text="🌐 KYRONIX • Minecraft Community"
+    )
+
+    await interaction.response.send_message(
+        embed=embed
+    )
+
+
+# =========================================================
 # MINECRAFT SERVER STATUS
 # =========================================================
 
@@ -385,6 +436,17 @@ async def on_ready():
     print(
         f"Logged in as {client.user}"
     )
+
+    # Sync slash commands
+    try:
+        synced = await client.tree.sync()
+        print(
+            f"Synced {len(synced)} slash command(s)."
+        )
+    except Exception as error:
+        print(
+            f"Slash command sync error: {error}"
+        )
 
     if not update_status.is_running():
 
