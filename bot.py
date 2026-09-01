@@ -11,12 +11,17 @@ from mcstatus import JavaServer
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
+# Minecraft Server
 MINECRAFT_SERVER = "paid-01.anuverse.fun:55556"
+
+# Discord Status Channel
 STATUS_CHANNEL_ID = 1543874103449092217
 
+# Server Settings
 MAX_PLAYERS = 20
 UPDATE_INTERVAL = 30
 
+# KYRONIX GIF
 GIF_URL = (
     "https://media.discordapp.net/attachments/"
     "1543861808367009793/1543863839324635196/"
@@ -32,26 +37,35 @@ GIF_URL = (
 
 intents = discord.Intents.default()
 
+# IMPORTANT:
+# Required for the bot to read "-ip" messages
+intents.message_content = True
+
 client = discord.Client(intents=intents)
 
 
 # =========================================================
-# -IP PREFIX COMMAND
+# -IP COMMAND
 # =========================================================
 
 @client.event
 async def on_message(message):
 
-    # Ignore messages sent by the bot itself
+    # Ignore messages sent by the bot
     if message.author == client.user:
         return
 
-    # Respond to -ip
+    # Check for -ip command
     if message.content.strip().lower() == "-ip":
 
         embed = discord.Embed(
+
             title="⚒️ Server IP",
-            description="**Where legends are forged.**",
+
+            description=(
+                "**Where legends are forged.**"
+            ),
+
             color=discord.Color.from_rgb(
                 0,
                 191,
@@ -59,32 +73,76 @@ async def on_message(message):
             )
         )
 
+        # -------------------------------------------------
+        # JAVA
+        # -------------------------------------------------
+
         embed.add_field(
+
             name="Java :",
-            value="```paid-01.anuverse.fun:55556```",
+
+            value=(
+                "```"
+                "paid-01.anuverse.fun:55556"
+                "```"
+            ),
+
             inline=False
         )
 
+        # -------------------------------------------------
+        # BEDROCK
+        # -------------------------------------------------
+
         embed.add_field(
+
             name="Bedrock:",
-            value="```paid-01.anuverse.fun```",
+
+            value=(
+                "```"
+                "paid-01.anuverse.fun"
+                "```"
+            ),
+
             inline=False
         )
 
+        # -------------------------------------------------
+        # BEDROCK PORT
+        # -------------------------------------------------
+
         embed.add_field(
+
             name="Port For Bedrock :",
-            value="```55556```",
+
+            value=(
+                "```"
+                "55556"
+                "```"
+            ),
+
             inline=False
         )
+
+        # -------------------------------------------------
+        # GIF
+        # -------------------------------------------------
 
         embed.set_image(
             url=GIF_URL
         )
 
+        # -------------------------------------------------
+        # FOOTER
+        # -------------------------------------------------
+
         embed.set_footer(
+
             text="🌐 KYRONIX • Minecraft Community"
+
         )
 
+        # Send response
         await message.channel.send(
             embed=embed
         )
@@ -98,7 +156,9 @@ async def get_minecraft_status():
 
     def check_server():
 
-        server = JavaServer.lookup(MINECRAFT_SERVER)
+        server = JavaServer.lookup(
+            MINECRAFT_SERVER
+        )
 
         status = server.status()
 
@@ -123,27 +183,43 @@ async def get_minecraft_status():
                 ]
 
         return {
+
             "online": True,
+
             "players": status.players.online,
+
             "max": MAX_PLAYERS,
+
             "names": players,
+
             "version": status.version.name
+
         }
 
     try:
 
-        return await asyncio.to_thread(check_server)
+        return await asyncio.to_thread(
+            check_server
+        )
 
     except Exception as error:
 
-        print(f"Minecraft server error: {error}")
+        print(
+            f"Minecraft server error: {error}"
+        )
 
         return {
+
             "online": False,
+
             "players": 0,
+
             "max": MAX_PLAYERS,
+
             "names": [],
+
             "version": "Unknown"
+
         }
 
 
@@ -176,15 +252,21 @@ async def update_status():
                 title="⚔️  KYRONIX",
 
                 description=(
+
                     "### 🔴 Server Offline\n"
+
                     "The Minecraft server is currently unavailable."
+
                 ),
 
                 color=discord.Color.from_rgb(
+
                     220,
                     53,
                     69
+
                 )
+
             )
 
             embed.add_field(
@@ -194,6 +276,7 @@ async def update_status():
                 value="**0/20**",
 
                 inline=True
+
             )
 
             embed.add_field(
@@ -203,6 +286,7 @@ async def update_status():
                 value="🔴 `Offline`",
 
                 inline=True
+
             )
 
             embed.add_field(
@@ -212,6 +296,7 @@ async def update_status():
                 value="Every day at **6:00 AM GMT+6**",
 
                 inline=False
+
             )
 
 
@@ -269,15 +354,21 @@ async def update_status():
                 title="⚔️  KYRONIX",
 
                 description=(
+
                     "### 🟢 Server Online\n"
+
                     "**Where legends are forged.**"
+
                 ),
 
                 color=discord.Color.from_rgb(
+
                     88,
                     166,
                     255
+
                 )
+
             )
 
 
@@ -292,6 +383,7 @@ async def update_status():
                 value=f"**{players}/{maximum}**",
 
                 inline=True
+
             )
 
 
@@ -306,6 +398,7 @@ async def update_status():
                 value="`Online`",
 
                 inline=True
+
             )
 
 
@@ -320,6 +413,7 @@ async def update_status():
                 value=player_list,
 
                 inline=False
+
             )
 
 
@@ -334,6 +428,7 @@ async def update_status():
                 value=f"`{version}`",
 
                 inline=True
+
             )
 
 
@@ -348,6 +443,7 @@ async def update_status():
                 value="**Every day at 6:00 AM GMT+6**",
 
                 inline=True
+
             )
 
 
@@ -356,7 +452,9 @@ async def update_status():
         # =================================================
 
         embed.set_image(
+
             url=GIF_URL
+
         )
 
 
@@ -378,17 +476,23 @@ async def update_status():
         # =================================================
 
         async for message in channel.history(
+
             limit=20
+
         ):
 
             if message.author == client.user:
 
                 await message.edit(
+
                     embed=embed
+
                 )
 
                 print(
+
                     "Status message updated."
+
                 )
 
                 return
@@ -399,11 +503,15 @@ async def update_status():
         # =================================================
 
         await channel.send(
+
             embed=embed
+
         )
 
         print(
+
             "Status message created."
+
         )
 
 
@@ -414,19 +522,25 @@ async def update_status():
     except discord.Forbidden:
 
         print(
+
             "ERROR: Missing Discord permissions."
+
         )
 
     except discord.NotFound:
 
         print(
+
             "ERROR: Status channel was not found."
+
         )
 
     except Exception as error:
 
         print(
+
             f"Status update error: {error}"
+
         )
 
 
@@ -438,7 +552,9 @@ async def update_status():
 async def on_ready():
 
     print(
+
         f"Logged in as {client.user}"
+
     )
 
     if not update_status.is_running():
@@ -453,10 +569,14 @@ async def on_ready():
 if not DISCORD_TOKEN:
 
     raise RuntimeError(
+
         "DISCORD_TOKEN environment variable is missing."
+
     )
 
 
 client.run(
+
     DISCORD_TOKEN
+
 )
