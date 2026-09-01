@@ -11,7 +11,7 @@ from mcstatus import JavaServer
 
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
-MINECRAFT_SERVER = "s1.anuverse.fun:25650"
+MINECRAFT_SERVER = "paid-01.anuverse.fun:55556"
 STATUS_CHANNEL_ID = 1543874103449092217
 
 MAX_PLAYERS = 20
