@@ -12,7 +12,7 @@ from mcstatus import JavaServer
 DISCORD_TOKEN = os.getenv("DISCORD_TOKEN")
 
 # Minecraft Server
-MINECRAFT_SERVER = "paid-01.anuverse.fun:55556"
+MINECRAFT_SERVER = "s1.anuverse.fun:55556"
 
 # Discord Status Channel
 STATUS_CHANNEL_ID = 1543874103449092217
@@ -83,7 +83,7 @@ async def on_message(message):
 
             value=(
                 "```"
-                "paid-01.anuverse.fun:55556"
+                "s1.anuverse.fun:55556"
                 "```"
             ),
 
@@ -100,7 +100,7 @@ async def on_message(message):
 
             value=(
                 "```"
-                "paid-01.anuverse.fun"
+                "s1.anuverse.fun"
                 "```"
             ),
 
